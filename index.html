@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>オフ会 当日準備チェック</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #f5f0e8;
+      font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+      color: #333;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #c0392b;
+      color: white;
+      padding: 16px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 18px;
+      font-weight: bold;
+      letter-spacing: 0.05em;
+    }
+
+    header p {
+      font-size: 13px;
+      margin-top: 4px;
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+    }
+
+    .intro {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      line-height: 1.7;
+      color: #555;
+      border-left: 4px solid #c0392b;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      transition: opacity 0.3s;
+    }
+
+    .card.hidden {
+      display: none;
+    }
+
+    .card.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .card-label {
+      font-size: 11px;
+      color: #888;
+      font-weight: bold;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .card-question {
+      font-size: 15px;
+      font-weight: bold;
+      margin-bottom: 12px;
+      color: #222;
+      line-height: 1.5;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 10px 8px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.15s;
+      background: #e8e0d4;
+      color: #666;
+    }
+
+    .btn:hover {
+      filter: brightness(0.95);
+    }
+
+    .btn.selected-yes {
+      background: #27ae60;
+      color: white;
+    }
+
+    .btn.selected-no {
+      background: #e07b4a;
+      color: white;
+    }
+
+    .btn.selected-mac {
+      background: #27ae60;
+      color: white;
+    }
+
+    .btn.selected-win {
+      background: #2980b9;
+      color: white;
+    }
+
+    .note {
+      font-size: 12px;
+      color: #888;
+      margin-top: 10px;
+      line-height: 1.6;
+    }
+
+    .note.warning {
+      color: #c0392b;
+      background: #fdecea;
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+
+    .note.info {
+      color: #2980b9;
+      background: #eaf4fb;
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+
+    /* 完了サマリー */
+    .summary-box {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 8px;
+      display: none;
+    }
+
+    .summary-box.visible {
+      display: block;
+    }
+
+    .summary-title {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .summary-content {
+      background: #f5f0e8;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 13px;
+      line-height: 1.8;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .copy-btn {
+      display: block;
+      width: 100%;
+      margin-top: 12px;
+      padding: 12px;
+      background: #c0392b;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .copy-btn:hover {
+      background: #a93226;
+    }
+
+    .copy-btn.copied {
+      background: #27ae60;
+    }
+
+    .all-ok-badge {
+      text-align: center;
+      font-size: 24px;
+      margin: 12px 0 4px;
+    }
+
+    .all-ok-text {
+      text-align: center;
+      font-size: 16px;
+      font-weight: bold;
+      color: #27ae60;
+      margin-bottom: 12px;
+    }
+
+    .progress-bar-wrap {
+      height: 4px;
+      background: #e8e0d4;
+      border-radius: 2px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: #27ae60;
+      border-radius: 2px;
+      transition: width 0.4s;
+      width: 0%;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🦀 クロコ オフ会 準備チェックしましょう</h1>
+  <p>オフ会会場に到着したら、以下のチェックをしてください</p>
+</header>
+
+<div class="container">
+
+  <div class="intro">
+    こんにちは！オフ会へようこそ😊<br>
+    スムーズにインストールを進めるため、以下の項目を順番に確認してください。
+  </div>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- Q1: リベチャット問診 -->
+  <div class="card" id="card-libe">
+    <div class="card-label">💬 リベチャット</div>
+    <div class="card-question">本日のリベチャットで問診に答えましたか？</div>
+    <div class="btn-group">
+      <button class="btn" onclick="answer('libe', 'yes')">✅ 答えた</button>
+      <button class="btn" onclick="answer('libe', 'no')">❌ まだ / 知らない</button>
+    </div>
+    <div class="note">※ オフ会当日のリベシティチャットに問診が投稿されています。答えることでサポートがスムーズになります。</div>
+    <div class="note warning hidden" id="note-libe-no">まず問診に答えてからチェックを進めてください。こちらの準備の都合上、事前に状況を把握できていないとサポートはできません。</div>
+  </div>
+
+  <!-- Q2: ノートPC -->
+  <div class="card hidden" id="card-pc">
+    <div class="card-label">📋 PC確認</div>
+    <div class="card-question">ノートパソコンを準備していますか？</div>
+    <div class="btn-group">
+      <button class="btn" onclick="answer('pc', 'yes')">✅ 準備できている</button>
+      <button class="btn" onclick="answer('pc', 'no')">❌ 持っていない</button>
+    </div>
+    <div class="note">※ クロコ（Claude Code）にタブレット・スマホ版はありません。ノートPCが必須です。</div>
+    <div class="note warning hidden" id="note-pc-no">ノートPCがないとインストールができません。スタッフにご相談ください。</div>
+  </div>
+
+  <!-- Q3: 電源 -->
+  <div class="card hidden" id="card-power">
+    <div class="card-label">🔌 電源確認</div>
+    <div class="card-question">パソコンの電源ケーブルを繋いでいますか？</div>
+    <div class="btn-group">
+      <button class="btn" onclick="answer('power', 'yes')">✅ 繋いでいる</button>
+      <button class="btn" onclick="answer('power', 'no')">❌ バッテリーのみ</button>
+    </div>
+    <div class="note">※ インストール中にバッテリー切れになるとトラブルの原因になります。電源ケーブルを接続してから始めましょう。</div>
+    <div class="note warning hidden" id="note-power-no">バッテリーの残量が少ないとクロードコードのインストールができません。電源ケーブルをお持ちの方はすぐに接続してください。お持ちでない方はスタッフにご相談ください。</div>
+  </div>
+
+  <!-- Q5: スマホ -->
+  <div class="card hidden" id="card-phone">
+    <div class="card-label">📱 スマホ準備</div>
+    <div class="card-question">スマホを手元（横）に置いていますか？</div>
+    <div class="btn-group">
+      <button class="btn" onclick="answer('phone', 'yes')">✅ 置いている</button>
+      <button class="btn" onclick="answer('phone', 'no')">❌ カバンの中</button>
+    </div>
+    <div class="note">※ Anthropicアカウント作成時にSMS認証が必要です。すぐ手が届く場所に置いておきましょう。</div>
+    <div class="note info hidden" id="note-phone-no">カバンからスマホを取り出して、PCの横に置いておきましょう。</div>
+  </div>
+
+  <!-- Q6: 名札 -->
+  <div class="card hidden" id="card-badge">
+    <div class="card-label">🏷️ 名札</div>
+    <div class="card-question">名札をつけていますか？</div>
+    <div class="btn-group">
+      <button class="btn" onclick="answer('badge', 'yes')">✅ つけている</button>
+      <button class="btn" onclick="answer('badge', 'no')">❌ まだ</button>
+    </div>
+    <div class="note">※ オフィスのルールです。受付でお渡しした名札をつけてください。</div>
+    <div class="note warning hidden" id="note-badge-no">受付スタッフに声をかけて名札を受け取ってください。</div>
+  </div>
+
+  <!-- Q7: OS選択 -->
+  <div class="card hidden" id="card-os">
+    <div class="card-label">💻 OS確認</div>
+    <div class="card-question">ノートパソコンのOSを教えてください</div>
+    <div class="btn-group">
+      <button class="btn" onclick="answer('os', 'mac')">🍎 Mac</button>
+      <button class="btn" onclick="answer('os', 'win')">🪟 Windows</button>
+    </div>
+    <div class="note">※ OSによって次の確認項目が変わります。</div>
+  </div>
+
+  <!-- Q7b: Macのみ ソフトウェアアップデート -->
+  <div class="card hidden" id="card-macupdate">
+    <div class="card-label">🍎 Mac専用</div>
+    <div class="card-question">macOSのソフトウェアアップデートは完了していますか？</div>
+    <div class="btn-group">
+      <button class="btn" onclick="answer('macupdate', 'yes')">✅ 完了している</button>
+      <button class="btn" onclick="answer('macupdate', 'no')">⚠️ まだ / わからない</button>
+    </div>
+    <div class="note">※ クロコ（Claude Codeデスクトップ版）はmacOS Tahoe 15以上で動作が保証されています。</div>
+    <div class="note warning hidden" id="note-macupdate-no">「システム設定」→「一般」→「ソフトウェアアップデート」から確認できます。アップデート中は時間がかかるため、スタッフにご相談ください。</div>
+  </div>
+
+  <!-- Q8: Gmail準備 -->
+  <div class="card hidden" id="card-gmail">
+    <div class="card-label">📧 Gmailアカウント</div>
+    <div class="card-question">クロコで使うGmailアカウントを決めていますか？</div>
+    <div class="btn-group">
+      <button class="btn" onclick="answer('gmail', 'yes')">✅ 決めている</button>
+      <button class="btn" onclick="answer('gmail', 'no')">❓ まだ迷っている</button>
+    </div>
+    <div class="note">※ Anthropicアカウントに紐付けるメインのGmailアカウントを1つ決めておきましょう。</div>
+    <div class="note info hidden" id="note-gmail-no">複数のGmailがある場合は、クロコ専用にするアカウントを1つ選んでおきましょう。新規作成も可能です。</div>
+  </div>
+
+  <!-- Q9: スクショ -->
+  <div class="card hidden" id="card-screenshot">
+    <div class="card-label">🛠️ スキルチェック</div>
+    <div class="card-question">スクリーンショット（スクショ）の撮り方を知っていますか？</div>
+    <div class="btn-group">
+      <button class="btn" onclick="answer('screenshot', 'yes')">✅ 知っている</button>
+      <button class="btn" onclick="answer('screenshot', 'no')">❌ 知らない / 自信がない</button>
+    </div>
+    <div class="note">※ エラー画面などをスタッフに共有するときに使います。</div>
+    <div class="note info hidden" id="note-screenshot-no">Mac: Command + Shift + 3（全体）/ Command + Shift + 4（範囲選択）<br>Windows: Windows + Shift + S（切り取り＆スケッチ）</div>
+  </div>
+
+  <!-- Q10: ターミナル/PowerShell -->
+  <div class="card hidden" id="card-terminal">
+    <div class="card-label">🛠️ スキルチェック</div>
+    <div class="card-question" id="terminal-question">ターミナル / PowerShellの開き方を知っていますか？</div>
+    <div class="btn-group">
+      <button class="btn" onclick="answer('terminal', 'yes')">✅ 知っている</button>
+      <button class="btn" onclick="answer('terminal', 'no')">❌ 知らない / 自信がない</button>
+    </div>
+    <div class="note" id="terminal-note">※ クロコのインストールにターミナル（Mac）またはPowerShell（Windows）を使います。</div>
+    <div class="note info hidden" id="note-terminal-no" id="terminal-hint">Mac: Spotlight（Command + Space）で「ターミナル」と検索<br>Windows: スタートメニューで「PowerShell」と検索</div>
+  </div>
+
+  <!-- Q11: Chrome -->
+  <div class="card hidden" id="card-chrome">
+    <div class="card-label">🌐 ブラウザ確認</div>
+    <div class="card-question">GoogleのChromeブラウザを使っていますか？</div>
+    <div class="btn-group">
+      <button class="btn" onclick="answer('chrome', 'yes')">✅ Chromeを使っている</button>
+      <button class="btn" onclick="answer('chrome', 'no')">❌ 別のブラウザを使っている</button>
+    </div>
+    <div class="note">※ クロコの操作はChromeブラウザでの利用を推奨しています。</div>
+    <div class="note info hidden" id="note-chrome-no">Chromeをインストールしていない場合は、スタッフにお声がけください。インストール方法をご案内します。</div>
+  </div>
+
+  <!-- 完了サマリー -->
+  <div class="summary-box" id="summaryBox">
+    <div class="all-ok-badge">🎉</div>
+    <div class="all-ok-text">準備チェック完了！</div>
+    <div class="summary-title">📋 チェック結果（コピーしてチャットに貼り付けてください）</div>
+    <div class="summary-content" id="summaryContent"></div>
+    <button class="copy-btn" id="copyBtn" onclick="copySummary()">コピーする</button>
+  </div>
+
+</div>
+
+<script>
+  const answers = {};
+  const ORDER = ['libe', 'pc', 'power', 'phone', 'badge', 'os', 'macupdate', 'gmail', 'screenshot', 'terminal', 'chrome'];
+
+  function getNextCard(currentId) {
+    if (currentId === 'os') {
+      return answers['os'] === 'mac' ? 'macupdate' : 'gmail';
+    }
+    const idx = ORDER.indexOf(currentId);
+    if (idx === -1 || idx === ORDER.length - 1) return null;
+    return ORDER[idx + 1];
+  }
+
+  function answer(cardId, value) {
+    answers[cardId] = value;
+
+    const card = document.getElementById('card-' + cardId);
+    const btns = card.querySelectorAll('.btn');
+    btns.forEach(btn => {
+      btn.classList.remove('selected-yes', 'selected-no', 'selected-mac', 'selected-win');
+    });
+
+    if (value === 'yes') btns[0].classList.add('selected-yes');
+    else if (value === 'no') btns[1].classList.add('selected-no');
+    else if (value === 'mac') btns[0].classList.add('selected-mac');
+    else if (value === 'win') btns[1].classList.add('selected-win');
+
+    const noteNo = document.getElementById('note-' + cardId + '-no');
+    if (noteNo) {
+      if (value === 'no') noteNo.classList.remove('hidden');
+      else noteNo.classList.add('hidden');
+    }
+
+    const nextId = getNextCard(cardId);
+    if (nextId !== null) {
+      const nextCard = document.getElementById('card-' + nextId);
+      if (nextCard) {
+        nextCard.classList.remove('hidden');
+        setTimeout(() => nextCard.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+      }
+    } else {
+      showSummary();
+    }
+
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const total = answers['os'] === 'win' ? ORDER.length - 1 : ORDER.length;
+    const answered = Object.keys(answers).filter(k => k !== 'macupdate' || answers['os'] === 'mac').length;
+    const pct = Math.min(100, Math.round((answered / total) * 100));
+    document.getElementById('progressBar').style.width = pct + '%';
+  }
+
+  function showSummary() {
+    const labelMap = {
+      libe: 'リベチャット問診',
+      pc: 'ノートPC準備',
+      power: '電源接続',
+      wifi: 'Wi-Fi接続',
+      phone: 'スマホ準備',
+      badge: '名札',
+      os: 'OS',
+      macupdate: 'macOSアップデート',
+      gmail: 'Gmail準備',
+      screenshot: 'スクショ',
+      terminal: 'ターミナル/PowerShell',
+      chrome: 'Chromeブラウザ',
+    };
+    const valueMap = {
+      yes: 'OK ✅',
+      no: '未対応 ❌',
+      mac: 'Mac 🍎',
+      win: 'Windows 🪟',
+    };
+
+    let lines = ['当日準備チェック結果'];
+    lines.push('');
+    ORDER.forEach(id => {
+      if (id === 'macupdate' && answers['os'] !== 'mac') return;
+      if (answers[id] !== undefined) {
+        lines.push(labelMap[id] + ': ' + (valueMap[answers[id]] || answers[id]));
+      }
+    });
+
+    document.getElementById('summaryContent').textContent = lines.join('\n');
+    const box = document.getElementById('summaryBox');
+    box.classList.add('visible');
+    setTimeout(() => box.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+  }
+
+  function copySummary() {
+    const text = document.getElementById('summaryContent').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = 'コピーしました！';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'コピーする';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
+
+</body>
+</html>
