@@ -205,7 +205,7 @@
       transition: all 0.15s;
     }
 
-    .copy-btn:not(:disabled) {
+    .copy-btn.active {
       background: #c0392b;
       color: white;
       cursor: pointer;
@@ -287,6 +287,8 @@
     <div class="progress-bar" id="progressBar"></div>
   </div>
 
+  <!-- Q1〜Q7: 最初から全部表示 -->
+
   <!-- Q1: 名札 -->
   <div class="card" id="card-badge">
     <div class="card-label">🏷️ 名札</div>
@@ -300,7 +302,7 @@
   </div>
 
   <!-- Q2: リベチャット問診 -->
-  <div class="card hidden" id="card-libe">
+  <div class="card" id="card-libe">
     <div class="card-label">💬 リベチャット</div>
     <div class="card-question">本日のリベチャットで問診に答えましたか？</div>
     <div class="btn-group">
@@ -311,31 +313,8 @@
     <div class="note warning hidden" id="note-libe-no">まず問診に答えてからチェックを進めてください。こちらの準備の都合上、事前に状況を把握できていないとサポートはできません。</div>
   </div>
 
-  <!-- Q3: OS選択 -->
-  <div class="card hidden" id="card-os">
-    <div class="card-label">💻 パソコン種類</div>
-    <div class="card-question">パソコンの種類を教えてください</div>
-    <div class="btn-group">
-      <button class="btn" onclick="answer('os', 'mac')">🍎 Mac</button>
-      <button class="btn" onclick="answer('os', 'win')">🪟 Windows</button>
-    </div>
-    <div class="note">※ OSによって次の確認項目が変わります。</div>
-  </div>
-
-  <!-- Q4: Macのみ ソフトウェアアップデート -->
-  <div class="card hidden" id="card-macupdate">
-    <div class="card-label">🍎 Mac専用</div>
-    <div class="card-question">macOSのソフトウェアアップデートは完了していますか？</div>
-    <div class="btn-group">
-      <button class="btn" onclick="answer('macupdate', 'yes')">✅ 完了している</button>
-      <button class="btn" onclick="answer('macupdate', 'no')">⚠️ まだ / わからない</button>
-    </div>
-    <div class="note">※ クロコ（Claude Codeデスクトップ版）はmacOS Tahoe 15以上で動作が保証されています。</div>
-    <div class="note warning hidden" id="note-macupdate-no">「システム設定」→「一般」→「ソフトウェアアップデート」から確認できます。アップデート中は時間がかかるため、スタッフにご相談ください。</div>
-  </div>
-
-  <!-- Q5: 再起動 -->
-  <div class="card hidden" id="card-reboot">
+  <!-- Q3: 再起動 -->
+  <div class="card" id="card-reboot">
     <div class="card-label">🔄 再起動確認</div>
     <div class="card-question">作業前にパソコンを再起動しましたか？</div>
     <div class="btn-group">
@@ -347,8 +326,8 @@
     <div class="note info hidden" id="note-reboot-no">インストール作業を始める前に一度再起動しておきましょう。スタッフにお声がけください。</div>
   </div>
 
-  <!-- Q6: Gmail準備 -->
-  <div class="card hidden" id="card-gmail">
+  <!-- Q4: Gmail準備 -->
+  <div class="card" id="card-gmail">
     <div class="card-label">📧 Gmailアカウント</div>
     <div class="card-question">クロコで使うGmailアカウントを決めていますか？</div>
     <div class="btn-group">
@@ -359,8 +338,8 @@
     <div class="note info hidden" id="note-gmail-no">複数のGmailがある場合は、クロコ専用にするアカウントを1つ選んでおきましょう。新規作成も可能です。</div>
   </div>
 
-  <!-- Q7: 電源 -->
-  <div class="card hidden" id="card-power">
+  <!-- Q5: 電源 -->
+  <div class="card" id="card-power">
     <div class="card-label">🔌 電源確認</div>
     <div class="card-question">パソコンの電源ケーブルを繋いでいますか？</div>
     <div class="btn-group">
@@ -371,8 +350,8 @@
     <div class="note warning hidden" id="note-power-no">バッテリーの残量が少ないとクロードコードのインストールができません。電源ケーブルをお持ちの方はすぐに接続してください。お持ちでない方はスタッフにご相談ください。</div>
   </div>
 
-  <!-- Q8: スマホ -->
-  <div class="card hidden" id="card-phone">
+  <!-- Q6: スマホ -->
+  <div class="card" id="card-phone">
     <div class="card-label">📱 スマホ準備</div>
     <div class="card-question">スマホを手元（横）に置いていますか？</div>
     <div class="btn-group">
@@ -383,7 +362,32 @@
     <div class="note info hidden" id="note-phone-no">カバンからスマホを取り出して、PCの横に置いておきましょう。</div>
   </div>
 
-  <!-- Q9: Chrome -->
+  <!-- Q7: OS選択（ここで分岐） -->
+  <div class="card" id="card-os">
+    <div class="card-label">💻 パソコン種類</div>
+    <div class="card-question">パソコンの種類を教えてください</div>
+    <div class="btn-group">
+      <button class="btn" onclick="answer('os', 'mac')">🍎 Mac</button>
+      <button class="btn" onclick="answer('os', 'win')">🪟 Windows</button>
+    </div>
+    <div class="note">※ OSによって次の確認項目が変わります。</div>
+  </div>
+
+  <!-- Q8以降: OS選択後に表示 -->
+
+  <!-- Q8: Macのみ ソフトウェアアップデート -->
+  <div class="card hidden" id="card-macupdate">
+    <div class="card-label">🍎 Mac専用</div>
+    <div class="card-question">macOSのソフトウェアアップデートは完了していますか？</div>
+    <div class="btn-group">
+      <button class="btn" onclick="answer('macupdate', 'yes')">✅ 完了している</button>
+      <button class="btn" onclick="answer('macupdate', 'no')">⚠️ まだ / わからない</button>
+    </div>
+    <div class="note">※ クロコ（Claude Codeデスクトップ版）はmacOS Tahoe 15以上で動作が保証されています。</div>
+    <div class="note warning hidden" id="note-macupdate-no">「システム設定」→「一般」→「ソフトウェアアップデート」から確認できます。アップデート中は時間がかかるため、スタッフにご相談ください。</div>
+  </div>
+
+  <!-- Q9: Chrome（OS別テキスト） -->
   <div class="card hidden" id="card-chrome">
     <div class="card-label">🌐 ブラウザ確認</div>
     <div class="card-question">デフォルトのWebブラウザはChromeに設定されていますか？</div>
@@ -392,7 +396,7 @@
       <button class="btn" onclick="answer('chrome', 'no')">❌ いいえ</button>
       <button class="btn" onclick="answer('chrome', 'unknown')">❓ わからない</button>
     </div>
-    <div class="note">※ Mac: システム設定 → デスクトップとDock → デフォルトのWebブラウザ で確認できます。</div>
+    <div class="note" id="note-chrome-os">※ Mac: システム設定 → デスクトップとDock → デフォルトのWebブラウザ で確認できます。</div>
     <div class="note info hidden" id="note-chrome-no">Chromeをデフォルトに設定していない場合や、インストールされていない場合はスタッフにお声がけください。</div>
   </div>
 
@@ -404,30 +408,20 @@
       <button class="btn" onclick="answer('screenshot', 'yes')">✅ 知っている</button>
       <button class="btn" onclick="answer('screenshot', 'no')">❌ 知らない / 自信がない</button>
     </div>
-    <div class="note">※ エラー画面などをスタッフに共有するときに使います。</div>
+    <div class="note" id="note-screenshot-os">※ エラー画面などをスタッフに共有するときに使います。</div>
     <div class="note info hidden" id="note-screenshot-no">Mac: Command + Shift + 3（全体）/ Command + Shift + 4（範囲選択）<br>Windows: Windows + Shift + S（切り取り＆スケッチ）</div>
   </div>
 
-  <!-- Q11: ターミナル/PowerShell -->
+  <!-- Q11: ターミナル/PowerShell（OS別テキスト） -->
   <div class="card hidden" id="card-terminal">
     <div class="card-label">🛠️ スキルチェック</div>
-    <div class="card-question">ターミナル / PowerShellの開き方を知っていますか？</div>
+    <div class="card-question" id="q-terminal">ターミナル / PowerShellの開き方を知っていますか？</div>
     <div class="btn-group">
       <button class="btn" onclick="answer('terminal', 'yes')">✅ 知っている</button>
       <button class="btn" onclick="answer('terminal', 'no')">❌ 知らない / 自信がない</button>
     </div>
-    <div class="note">※ クロコのインストールにターミナル（Mac）またはPowerShell（Windows）を使います。</div>
+    <div class="note" id="note-terminal-os">※ クロコのインストールにターミナル（Mac）またはPowerShell（Windows）を使います。</div>
     <div class="note info hidden" id="note-terminal-no">Mac: Spotlight（Command + Space）で「ターミナル」と検索<br>Windows: スタートメニューで「PowerShell」と検索</div>
-  </div>
-
-  <!-- 下書き（常時表示） -->
-  <div class="summary-box visible" id="summaryBox">
-    <div class="summary-title">📋 チャットに貼り付ける下書き</div>
-    <div class="all-ok-badge hidden" id="allOkBadge">🎉</div>
-    <div class="all-ok-text hidden" id="allOkText">準備チェック完了！</div>
-    <textarea class="summary-content" id="summaryContent" readonly placeholder="すべての質問に答えると、ここに下書きが表示されます。"></textarea>
-    <button class="copy-btn" id="copyBtn" onclick="copySummary()" disabled>コピーする</button>
-    <button class="reset-btn" onclick="resetAll()">リセット</button>
   </div>
 
   <!-- Q12: Spotlightの起動確認（Macのみ） -->
@@ -443,23 +437,44 @@
     <div class="note info hidden" id="note-spotlight-no">Spotlightが起動しない場合はスタッフにお声がけください。別の方法でターミナルを開きます。</div>
   </div>
 
+  <!-- 下書き（常時表示・全設問の後） -->
+  <div class="summary-box visible" id="summaryBox">
+    <div class="summary-title">📋 チャットに貼り付ける下書き</div>
+    <div class="all-ok-badge hidden" id="allOkBadge">🎉</div>
+    <div class="all-ok-text hidden" id="allOkText">準備チェック完了！</div>
+    <textarea class="summary-content" id="summaryContent" readonly placeholder="すべての質問に答えると、ここに下書きが表示されます。"></textarea>
+    <button class="copy-btn" id="copyBtn" onclick="copySummary()" disabled>コピーする</button>
+    <button class="reset-btn" onclick="resetAll()">リセット</button>
+  </div>
 
 </div>
 
 <script>
   const answers = {};
-  const ORDER = ['badge', 'libe', 'os', 'macupdate', 'reboot', 'gmail', 'power', 'phone', 'chrome', 'screenshot', 'terminal', 'spotlight'];
+  const ORDER = ['badge', 'libe', 'reboot', 'gmail', 'power', 'phone', 'os', 'macupdate', 'chrome', 'screenshot', 'terminal', 'spotlight'];
+  const ALWAYS_VISIBLE = ['badge', 'libe', 'reboot', 'gmail', 'power', 'phone', 'os'];
 
   function getNextCard(currentId) {
-    if (currentId === 'os') {
-      return answers['os'] === 'mac' ? 'macupdate' : 'reboot';
-    }
-    if (currentId === 'terminal') {
-      return answers['os'] === 'mac' ? 'spotlight' : null;
-    }
+    if (ALWAYS_VISIBLE.includes(currentId)) return null; // Q1-Q7は常時表示なので次を開く必要なし
+    if (currentId === 'os') return null; // OS選択はanswerで別処理
+    if (currentId === 'terminal') return answers['os'] === 'mac' ? 'spotlight' : null;
     const idx = ORDER.indexOf(currentId);
     if (idx === -1 || idx === ORDER.length - 1) return null;
     return ORDER[idx + 1];
+  }
+
+  function applyOsText(os) {
+    if (os === 'mac') {
+      document.getElementById('note-chrome-os').textContent = '※ Mac: システム設定 → デスクトップとDock → デフォルトのWebブラウザ で確認できます。';
+      document.getElementById('q-terminal').textContent = 'ターミナルの開き方を知っていますか？';
+      document.getElementById('note-terminal-os').textContent = '※ クロコのインストールにターミナルを使います。';
+      document.getElementById('note-screenshot-os').textContent = '※ エラー画面などをスタッフに共有するときに使います。（Command + Shift + 3 で全画面）';
+    } else {
+      document.getElementById('note-chrome-os').textContent = '※ Windows: 設定 → アプリ → 既定のアプリ → Webブラウザー で確認できます。';
+      document.getElementById('q-terminal').textContent = 'PowerShellの開き方を知っていますか？';
+      document.getElementById('note-terminal-os').textContent = '※ クロコのインストールにPowerShellを使います。';
+      document.getElementById('note-screenshot-os').textContent = '※ エラー画面などをスタッフに共有するときに使います。（Windows + Shift + S）';
+    }
   }
 
   function answer(cardId, value) {
@@ -486,15 +501,23 @@
       else noteNo.classList.add('hidden');
     }
 
-    const nextId = getNextCard(cardId);
-    if (nextId !== null) {
-      const nextCard = document.getElementById('card-' + nextId);
-      if (nextCard) {
-        nextCard.classList.remove('hidden');
-        setTimeout(() => nextCard.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-      }
+    if (cardId === 'os') {
+      applyOsText(value);
+      const firstCard = value === 'mac' ? 'macupdate' : 'chrome';
+      const el = document.getElementById('card-' + firstCard);
+      el.classList.remove('hidden');
+      setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
     } else {
-      showSummary();
+      const nextId = getNextCard(cardId);
+      if (nextId !== null) {
+        const nextCard = document.getElementById('card-' + nextId);
+        if (nextCard) {
+          nextCard.classList.remove('hidden');
+          setTimeout(() => nextCard.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+        }
+      } else if (!ALWAYS_VISIBLE.includes(cardId)) {
+        showSummary();
+      }
     }
 
     updateSummaryContent();
@@ -549,7 +572,9 @@
   function showSummary() {
     document.getElementById('allOkBadge').classList.remove('hidden');
     document.getElementById('allOkText').classList.remove('hidden');
-    document.getElementById('copyBtn').disabled = false;
+    const btn = document.getElementById('copyBtn');
+    btn.disabled = false;
+    btn.classList.add('active');
   }
 
   function copySummary() {
