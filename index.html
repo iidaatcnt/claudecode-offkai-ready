@@ -127,6 +127,11 @@
       color: white;
     }
 
+    .btn.selected-unknown {
+      background: #7f8c8d;
+      color: white;
+    }
+
     .note {
       font-size: 12px;
       color: #888;
@@ -169,36 +174,68 @@
     }
 
     .summary-content {
-      background: #f5f0e8;
+      width: 100%;
+      min-height: 160px;
+      border: 1px solid #ddd;
       border-radius: 8px;
       padding: 12px;
       font-size: 13px;
       line-height: 1.8;
       white-space: pre-wrap;
       word-break: break-all;
+      background: white;
+      box-sizing: border-box;
+      color: #555;
+      resize: none;
+      font-family: inherit;
     }
 
     .copy-btn {
       display: block;
       width: 100%;
-      margin-top: 12px;
+      margin-top: 10px;
       padding: 12px;
-      background: #c0392b;
-      color: white;
+      background: #e8e0d4;
+      color: #999;
       border: none;
       border-radius: 8px;
       font-size: 15px;
       font-weight: bold;
-      cursor: pointer;
-      transition: background 0.15s;
+      cursor: not-allowed;
+      transition: all 0.15s;
     }
 
-    .copy-btn:hover {
+    .copy-btn:not(:disabled) {
+      background: #c0392b;
+      color: white;
+      cursor: pointer;
+    }
+
+    .copy-btn:hover:not(:disabled) {
       background: #a93226;
     }
 
     .copy-btn.copied {
       background: #27ae60;
+      color: white;
+    }
+
+    .reset-btn {
+      display: block;
+      width: 100%;
+      margin-top: 8px;
+      padding: 12px;
+      background: white;
+      color: #888;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .reset-btn:hover {
+      background: #f5f0e8;
     }
 
     .all-ok-badge {
@@ -250,56 +287,8 @@
     <div class="progress-bar" id="progressBar"></div>
   </div>
 
-  <!-- Q1: リベチャット問診 -->
-  <div class="card" id="card-libe">
-    <div class="card-label">💬 リベチャット</div>
-    <div class="card-question">本日のリベチャットで問診に答えましたか？</div>
-    <div class="btn-group">
-      <button class="btn" onclick="answer('libe', 'yes')">✅ 答えた</button>
-      <button class="btn" onclick="answer('libe', 'no')">❌ まだ / 知らない</button>
-    </div>
-    <div class="note">※ オフ会当日のリベシティチャットに問診が投稿されています。答えることでサポートがスムーズになります。</div>
-    <div class="note warning hidden" id="note-libe-no">まず問診に答えてからチェックを進めてください。こちらの準備の都合上、事前に状況を把握できていないとサポートはできません。</div>
-  </div>
-
-  <!-- Q2: ノートPC -->
-  <div class="card hidden" id="card-pc">
-    <div class="card-label">📋 PC確認</div>
-    <div class="card-question">ノートパソコンを準備していますか？</div>
-    <div class="btn-group">
-      <button class="btn" onclick="answer('pc', 'yes')">✅ 準備できている</button>
-      <button class="btn" onclick="answer('pc', 'no')">❌ 持っていない</button>
-    </div>
-    <div class="note">※ クロコ（Claude Code）にタブレット・スマホ版はありません。ノートPCが必須です。</div>
-    <div class="note warning hidden" id="note-pc-no">ノートPCがないとインストールができません。スタッフにご相談ください。</div>
-  </div>
-
-  <!-- Q3: 電源 -->
-  <div class="card hidden" id="card-power">
-    <div class="card-label">🔌 電源確認</div>
-    <div class="card-question">パソコンの電源ケーブルを繋いでいますか？</div>
-    <div class="btn-group">
-      <button class="btn" onclick="answer('power', 'yes')">✅ 繋いでいる</button>
-      <button class="btn" onclick="answer('power', 'no')">❌ バッテリーのみ</button>
-    </div>
-    <div class="note">※ インストール中にバッテリー切れになるとトラブルの原因になります。電源ケーブルを接続してから始めましょう。</div>
-    <div class="note warning hidden" id="note-power-no">バッテリーの残量が少ないとクロードコードのインストールができません。電源ケーブルをお持ちの方はすぐに接続してください。お持ちでない方はスタッフにご相談ください。</div>
-  </div>
-
-  <!-- Q5: スマホ -->
-  <div class="card hidden" id="card-phone">
-    <div class="card-label">📱 スマホ準備</div>
-    <div class="card-question">スマホを手元（横）に置いていますか？</div>
-    <div class="btn-group">
-      <button class="btn" onclick="answer('phone', 'yes')">✅ 置いている</button>
-      <button class="btn" onclick="answer('phone', 'no')">❌ カバンの中</button>
-    </div>
-    <div class="note">※ Anthropicアカウント作成時にSMS認証が必要です。すぐ手が届く場所に置いておきましょう。</div>
-    <div class="note info hidden" id="note-phone-no">カバンからスマホを取り出して、PCの横に置いておきましょう。</div>
-  </div>
-
-  <!-- Q6: 名札 -->
-  <div class="card hidden" id="card-badge">
+  <!-- Q1: 名札 -->
+  <div class="card" id="card-badge">
     <div class="card-label">🏷️ 名札</div>
     <div class="card-question">名札をつけていますか？</div>
     <div class="btn-group">
@@ -310,10 +299,22 @@
     <div class="note warning hidden" id="note-badge-no">受付スタッフに声をかけて名札を受け取ってください。</div>
   </div>
 
-  <!-- Q7: OS選択 -->
+  <!-- Q2: リベチャット問診 -->
+  <div class="card hidden" id="card-libe">
+    <div class="card-label">💬 リベチャット</div>
+    <div class="card-question">本日のリベチャットで問診に答えましたか？</div>
+    <div class="btn-group">
+      <button class="btn" onclick="answer('libe', 'yes')">✅ 答えた</button>
+      <button class="btn" onclick="answer('libe', 'no')">❌ まだ / 知らない</button>
+    </div>
+    <div class="note">※ オフ会当日のリベシティチャットに問診が投稿されています。答えることでサポートがスムーズになります。</div>
+    <div class="note warning hidden" id="note-libe-no">まず問診に答えてからチェックを進めてください。こちらの準備の都合上、事前に状況を把握できていないとサポートはできません。</div>
+  </div>
+
+  <!-- Q3: OS選択 -->
   <div class="card hidden" id="card-os">
-    <div class="card-label">💻 OS確認</div>
-    <div class="card-question">ノートパソコンのOSを教えてください</div>
+    <div class="card-label">💻 パソコン種類</div>
+    <div class="card-question">パソコンの種類を教えてください</div>
     <div class="btn-group">
       <button class="btn" onclick="answer('os', 'mac')">🍎 Mac</button>
       <button class="btn" onclick="answer('os', 'win')">🪟 Windows</button>
@@ -321,7 +322,7 @@
     <div class="note">※ OSによって次の確認項目が変わります。</div>
   </div>
 
-  <!-- Q7b: Macのみ ソフトウェアアップデート -->
+  <!-- Q4: Macのみ ソフトウェアアップデート -->
   <div class="card hidden" id="card-macupdate">
     <div class="card-label">🍎 Mac専用</div>
     <div class="card-question">macOSのソフトウェアアップデートは完了していますか？</div>
@@ -333,7 +334,20 @@
     <div class="note warning hidden" id="note-macupdate-no">「システム設定」→「一般」→「ソフトウェアアップデート」から確認できます。アップデート中は時間がかかるため、スタッフにご相談ください。</div>
   </div>
 
-  <!-- Q8: Gmail準備 -->
+  <!-- Q5: 再起動 -->
+  <div class="card hidden" id="card-reboot">
+    <div class="card-label">🔄 再起動確認</div>
+    <div class="card-question">作業前にパソコンを再起動しましたか？</div>
+    <div class="btn-group">
+      <button class="btn" onclick="answer('reboot', 'yes')">✅ 再起動済み</button>
+      <button class="btn" onclick="answer('reboot', 'no')">❌ していない</button>
+      <button class="btn" onclick="answer('reboot', 'unknown')">❓ わからない</button>
+    </div>
+    <div class="note">※ 再起動しておくことで不要なプロセスが終了し、インストールがスムーズに進みます。</div>
+    <div class="note info hidden" id="note-reboot-no">インストール作業を始める前に一度再起動しておきましょう。スタッフにお声がけください。</div>
+  </div>
+
+  <!-- Q6: Gmail準備 -->
   <div class="card hidden" id="card-gmail">
     <div class="card-label">📧 Gmailアカウント</div>
     <div class="card-question">クロコで使うGmailアカウントを決めていますか？</div>
@@ -345,7 +359,44 @@
     <div class="note info hidden" id="note-gmail-no">複数のGmailがある場合は、クロコ専用にするアカウントを1つ選んでおきましょう。新規作成も可能です。</div>
   </div>
 
-  <!-- Q9: スクショ -->
+  <!-- Q7: 電源 -->
+  <div class="card hidden" id="card-power">
+    <div class="card-label">🔌 電源確認</div>
+    <div class="card-question">パソコンの電源ケーブルを繋いでいますか？</div>
+    <div class="btn-group">
+      <button class="btn" onclick="answer('power', 'yes')">✅ 繋いでいる</button>
+      <button class="btn" onclick="answer('power', 'no')">❌ バッテリーのみ</button>
+    </div>
+    <div class="note">※ インストール中にバッテリー切れになるとトラブルの原因になります。電源ケーブルを接続してから始めましょう。</div>
+    <div class="note warning hidden" id="note-power-no">バッテリーの残量が少ないとクロードコードのインストールができません。電源ケーブルをお持ちの方はすぐに接続してください。お持ちでない方はスタッフにご相談ください。</div>
+  </div>
+
+  <!-- Q8: スマホ -->
+  <div class="card hidden" id="card-phone">
+    <div class="card-label">📱 スマホ準備</div>
+    <div class="card-question">スマホを手元（横）に置いていますか？</div>
+    <div class="btn-group">
+      <button class="btn" onclick="answer('phone', 'yes')">✅ 置いている</button>
+      <button class="btn" onclick="answer('phone', 'no')">❌ カバンの中</button>
+    </div>
+    <div class="note">※ Anthropicアカウント作成時にSMS認証が必要です。認証コードの有効時間が短いので、すぐ手が届く場所に置いておきましょう。</div>
+    <div class="note info hidden" id="note-phone-no">カバンからスマホを取り出して、PCの横に置いておきましょう。</div>
+  </div>
+
+  <!-- Q9: Chrome -->
+  <div class="card hidden" id="card-chrome">
+    <div class="card-label">🌐 ブラウザ確認</div>
+    <div class="card-question">デフォルトのWebブラウザはChromeに設定されていますか？</div>
+    <div class="btn-group">
+      <button class="btn" onclick="answer('chrome', 'yes')">✅ はい</button>
+      <button class="btn" onclick="answer('chrome', 'no')">❌ いいえ</button>
+      <button class="btn" onclick="answer('chrome', 'unknown')">❓ わからない</button>
+    </div>
+    <div class="note">※ Mac: システム設定 → デスクトップとDock → デフォルトのWebブラウザ で確認できます。</div>
+    <div class="note info hidden" id="note-chrome-no">Chromeをデフォルトに設定していない場合や、インストールされていない場合はスタッフにお声がけください。</div>
+  </div>
+
+  <!-- Q10: スクショ -->
   <div class="card hidden" id="card-screenshot">
     <div class="card-label">🛠️ スキルチェック</div>
     <div class="card-question">スクリーンショット（スクショ）の撮り方を知っていますか？</div>
@@ -357,48 +408,54 @@
     <div class="note info hidden" id="note-screenshot-no">Mac: Command + Shift + 3（全体）/ Command + Shift + 4（範囲選択）<br>Windows: Windows + Shift + S（切り取り＆スケッチ）</div>
   </div>
 
-  <!-- Q10: ターミナル/PowerShell -->
+  <!-- Q11: ターミナル/PowerShell -->
   <div class="card hidden" id="card-terminal">
     <div class="card-label">🛠️ スキルチェック</div>
-    <div class="card-question" id="terminal-question">ターミナル / PowerShellの開き方を知っていますか？</div>
+    <div class="card-question">ターミナル / PowerShellの開き方を知っていますか？</div>
     <div class="btn-group">
       <button class="btn" onclick="answer('terminal', 'yes')">✅ 知っている</button>
       <button class="btn" onclick="answer('terminal', 'no')">❌ 知らない / 自信がない</button>
     </div>
-    <div class="note" id="terminal-note">※ クロコのインストールにターミナル（Mac）またはPowerShell（Windows）を使います。</div>
-    <div class="note info hidden" id="note-terminal-no" id="terminal-hint">Mac: Spotlight（Command + Space）で「ターミナル」と検索<br>Windows: スタートメニューで「PowerShell」と検索</div>
+    <div class="note">※ クロコのインストールにターミナル（Mac）またはPowerShell（Windows）を使います。</div>
+    <div class="note info hidden" id="note-terminal-no">Mac: Spotlight（Command + Space）で「ターミナル」と検索<br>Windows: スタートメニューで「PowerShell」と検索</div>
   </div>
 
-  <!-- Q11: Chrome -->
-  <div class="card hidden" id="card-chrome">
-    <div class="card-label">🌐 ブラウザ確認</div>
-    <div class="card-question">GoogleのChromeブラウザを使っていますか？</div>
+  <!-- 下書き（常時表示） -->
+  <div class="summary-box visible" id="summaryBox">
+    <div class="summary-title">📋 チャットに貼り付ける下書き</div>
+    <div class="all-ok-badge hidden" id="allOkBadge">🎉</div>
+    <div class="all-ok-text hidden" id="allOkText">準備チェック完了！</div>
+    <textarea class="summary-content" id="summaryContent" readonly placeholder="すべての質問に答えると、ここに下書きが表示されます。"></textarea>
+    <button class="copy-btn" id="copyBtn" onclick="copySummary()" disabled>コピーする</button>
+    <button class="reset-btn" onclick="resetAll()">リセット</button>
+  </div>
+
+  <!-- Q12: Spotlightの起動確認（Macのみ） -->
+  <div class="card hidden" id="card-spotlight">
+    <div class="card-label">🍎 Mac専用</div>
+    <div class="card-question">Spotlight（スポットライト）は起動しますか？<br><small style="font-weight:normal;font-size:13px;">キーボードの Command + Space を押してみてください</small></div>
     <div class="btn-group">
-      <button class="btn" onclick="answer('chrome', 'yes')">✅ Chromeを使っている</button>
-      <button class="btn" onclick="answer('chrome', 'no')">❌ 別のブラウザを使っている</button>
+      <button class="btn" onclick="answer('spotlight', 'yes')">✅ 起動する</button>
+      <button class="btn" onclick="answer('spotlight', 'no')">❌ 起動しない</button>
+      <button class="btn" onclick="answer('spotlight', 'unknown')">❓ わからない</button>
     </div>
-    <div class="note">※ クロコの操作はChromeブラウザでの利用を推奨しています。</div>
-    <div class="note info hidden" id="note-chrome-no">Chromeをインストールしていない場合は、スタッフにお声がけください。インストール方法をご案内します。</div>
+    <div class="note">※ ターミナルを開くときにSpotlightを使います。</div>
+    <div class="note info hidden" id="note-spotlight-no">Spotlightが起動しない場合はスタッフにお声がけください。別の方法でターミナルを開きます。</div>
   </div>
 
-  <!-- 完了サマリー -->
-  <div class="summary-box" id="summaryBox">
-    <div class="all-ok-badge">🎉</div>
-    <div class="all-ok-text">準備チェック完了！</div>
-    <div class="summary-title">📋 チェック結果（コピーしてチャットに貼り付けてください）</div>
-    <div class="summary-content" id="summaryContent"></div>
-    <button class="copy-btn" id="copyBtn" onclick="copySummary()">コピーする</button>
-  </div>
 
 </div>
 
 <script>
   const answers = {};
-  const ORDER = ['libe', 'pc', 'power', 'phone', 'badge', 'os', 'macupdate', 'gmail', 'screenshot', 'terminal', 'chrome'];
+  const ORDER = ['badge', 'libe', 'os', 'macupdate', 'reboot', 'gmail', 'power', 'phone', 'chrome', 'screenshot', 'terminal', 'spotlight'];
 
   function getNextCard(currentId) {
     if (currentId === 'os') {
-      return answers['os'] === 'mac' ? 'macupdate' : 'gmail';
+      return answers['os'] === 'mac' ? 'macupdate' : 'reboot';
+    }
+    if (currentId === 'terminal') {
+      return answers['os'] === 'mac' ? 'spotlight' : null;
     }
     const idx = ORDER.indexOf(currentId);
     if (idx === -1 || idx === ORDER.length - 1) return null;
@@ -411,17 +468,21 @@
     const card = document.getElementById('card-' + cardId);
     const btns = card.querySelectorAll('.btn');
     btns.forEach(btn => {
-      btn.classList.remove('selected-yes', 'selected-no', 'selected-mac', 'selected-win');
+      btn.classList.remove('selected-yes', 'selected-no', 'selected-mac', 'selected-win', 'selected-unknown');
     });
 
     if (value === 'yes') btns[0].classList.add('selected-yes');
-    else if (value === 'no') btns[1].classList.add('selected-no');
+    else if (value === 'no') {
+      const noBtn = [...btns].find((_, i) => i === 1);
+      if (noBtn) noBtn.classList.add('selected-no');
+    }
+    else if (value === 'unknown') btns[2].classList.add('selected-unknown');
     else if (value === 'mac') btns[0].classList.add('selected-mac');
     else if (value === 'win') btns[1].classList.add('selected-win');
 
     const noteNo = document.getElementById('note-' + cardId + '-no');
     if (noteNo) {
-      if (value === 'no') noteNo.classList.remove('hidden');
+      if (value === 'no' || value === 'unknown') noteNo.classList.remove('hidden');
       else noteNo.classList.add('hidden');
     }
 
@@ -436,55 +497,63 @@
       showSummary();
     }
 
+    updateSummaryContent();
     updateProgress();
   }
 
   function updateProgress() {
-    const total = answers['os'] === 'win' ? ORDER.length - 1 : ORDER.length;
-    const answered = Object.keys(answers).filter(k => k !== 'macupdate' || answers['os'] === 'mac').length;
+    const macOnly = ['macupdate', 'spotlight'];
+    const total = answers['os'] === 'win' ? ORDER.length - macOnly.length : ORDER.length;
+    const answered = Object.keys(answers).filter(k => answers['os'] === 'mac' || !macOnly.includes(k)).length;
     const pct = Math.min(100, Math.round((answered / total) * 100));
     document.getElementById('progressBar').style.width = pct + '%';
   }
 
-  function showSummary() {
-    const labelMap = {
-      libe: 'リベチャット問診',
-      pc: 'ノートPC準備',
-      power: '電源接続',
-      wifi: 'Wi-Fi接続',
-      phone: 'スマホ準備',
-      badge: '名札',
-      os: 'OS',
-      macupdate: 'macOSアップデート',
-      gmail: 'Gmail準備',
-      screenshot: 'スクショ',
-      terminal: 'ターミナル/PowerShell',
-      chrome: 'Chromeブラウザ',
-    };
-    const valueMap = {
-      yes: 'OK ✅',
-      no: '未対応 ❌',
-      mac: 'Mac 🍎',
-      win: 'Windows 🪟',
-    };
+  const labelMap = {
+    badge: '名札',
+    libe: 'リベチャット問診',
+    os: 'パソコン種類',
+    macupdate: 'macOSアップデート',
+    reboot: '再起動',
+    gmail: 'Gmail準備',
+    power: '電源接続',
+    phone: 'スマホ準備',
+    chrome: 'デフォルトブラウザ(Chrome)',
+    screenshot: 'スクショ',
+    terminal: 'ターミナル/PowerShell',
+    spotlight: 'Spotlight起動確認',
+  };
+  const valueMap = {
+    yes: 'OK ✅',
+    no: '未対応 ❌',
+    unknown: 'わからない ❓',
+    mac: 'Mac 🍎',
+    win: 'Windows 🪟',
+  };
 
-    let lines = ['当日準備チェック結果'];
-    lines.push('');
+  function updateSummaryContent() {
+    let lines = ['当日準備チェック結果', ''];
     ORDER.forEach(id => {
-      if (id === 'macupdate' && answers['os'] !== 'mac') return;
-      if (answers[id] !== undefined) {
-        lines.push(labelMap[id] + ': ' + (valueMap[answers[id]] || answers[id]));
-      }
+      if (['macupdate', 'spotlight'].includes(id) && answers['os'] !== 'mac') return;
+      const val = answers[id];
+      lines.push(labelMap[id] + ': ' + (val !== undefined ? (valueMap[val] || val) : 'ー'));
     });
+    document.getElementById('summaryContent').value = lines.join('\n');
+  }
 
-    document.getElementById('summaryContent').textContent = lines.join('\n');
-    const box = document.getElementById('summaryBox');
-    box.classList.add('visible');
-    setTimeout(() => box.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+  function resetAll() {
+    if (!confirm('チェックをリセットしますか？')) return;
+    location.reload();
+  }
+
+  function showSummary() {
+    document.getElementById('allOkBadge').classList.remove('hidden');
+    document.getElementById('allOkText').classList.remove('hidden');
+    document.getElementById('copyBtn').disabled = false;
   }
 
   function copySummary() {
-    const text = document.getElementById('summaryContent').textContent;
+    const text = document.getElementById('summaryContent').value;
     navigator.clipboard.writeText(text).then(() => {
       const btn = document.getElementById('copyBtn');
       btn.textContent = 'コピーしました！';
