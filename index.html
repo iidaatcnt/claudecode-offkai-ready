@@ -566,7 +566,7 @@
 
   function resetAll() {
     if (!confirm('チェックをリセットしますか？')) return;
-    location.reload();
+    window.location.href = window.location.pathname + '?reset=' + Date.now();
   }
 
   function showSummary() {
