@@ -503,21 +503,13 @@
 
     if (cardId === 'os') {
       applyOsText(value);
-      const firstCard = value === 'mac' ? 'macupdate' : 'chrome';
-      const el = document.getElementById('card-' + firstCard);
-      el.classList.remove('hidden');
-      setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-    } else {
-      const nextId = getNextCard(cardId);
-      if (nextId !== null) {
-        const nextCard = document.getElementById('card-' + nextId);
-        if (nextCard) {
-          nextCard.classList.remove('hidden');
-          setTimeout(() => nextCard.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-        }
-      } else if (!ALWAYS_VISIBLE.includes(cardId)) {
-        showSummary();
-      }
+      const toShow = value === 'mac'
+        ? ['macupdate', 'chrome', 'screenshot', 'terminal', 'spotlight']
+        : ['chrome', 'screenshot', 'terminal'];
+      toShow.forEach(id => document.getElementById('card-' + id).classList.remove('hidden'));
+      setTimeout(() => document.getElementById('card-' + toShow[0]).scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+    } else if (!ALWAYS_VISIBLE.includes(cardId)) {
+      if (isAllAnswered()) showSummary();
     }
 
     updateSummaryContent();
@@ -553,6 +545,13 @@
     mac: 'Mac 🍎',
     win: 'Windows 🪟',
   };
+
+  function isAllAnswered() {
+    const required = answers['os'] === 'mac'
+      ? ORDER
+      : ORDER.filter(id => !['macupdate', 'spotlight'].includes(id));
+    return required.every(id => answers[id] !== undefined);
+  }
 
   function updateSummaryContent() {
     let lines = ['当日準備チェック結果', ''];
